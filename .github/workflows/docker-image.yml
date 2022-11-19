@@ -27,7 +27,7 @@ jobs:
           mkdir wheels
           docker cp wheels:./root/.cache/pip/wheels wheels
           export NUMPY=$(find wheels/ -type f -name "*.whl" | grep "numpy" | tail -n 1)
-          export PANDAS=$((find wheels/ -type f -name "*.whl" | grep "pandas")
+          export PANDAS=$(find wheels/ -type f -name "*.whl" | grep "pandas")
           echo "NUMPY=$NUMPY" >> $GITHUB_ENV
           echo "PANDAS=$PANDAS" >> $GITHUB_ENV
       - name: Upload wheels
