@@ -1,0 +1,41 @@
+name: Build wheels
+
+on: [workflow_dispatch]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get pandas version
+        run: |
+          export TAG=$(curl --silent https://api.github.com/repos/home-assistant/core/releases | jq -r 'map(select(.prerelease==false)) | first | .tag_name')
+          export VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep "pandas" | cut -d "=" -f3)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.2.1
+      - name: Build and load the image
+        run: |
+          docker buildx build --load --tag wheels --build-arg version=${{ env.VERSION }} \
+            --platform linux/arm/v5 --allow security.insecure --no-cache .
+      - name: Copy wheels from the image
+        run: |
+          docker create --name wheels wheels
+          mkdir wheels
+          docker cp wheels:./root/.cache/pip/wheels wheels
+          export NUMPY=$(find / -type f -name "*.whl" | grep "numpy" | tail -n 1)
+          export PANDAS=$((find / -type f -name "*.whl" | grep "pandas")
+          echo "NUMPY=$NUMPY" >> $GITHUB_ENV
+          echo "PANDAS=$PANDAS" >> $GITHUB_ENV
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: |
+            ${{ env.NUMPY }}
+            ${{ env.PANDAS }}
+          
+          
