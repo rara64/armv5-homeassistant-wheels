@@ -9,8 +9,10 @@ jobs:
       - name: Get pandas version
         run: |
           export TAG=$(curl --silent https://api.github.com/repos/home-assistant/core/releases | jq -r 'map(select(.prerelease==false)) | first | .tag_name')
-          export VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep "pandas" | cut -d "=" -f3)
-          echo "VERSION=$VER" >> $GITHUB_ENV
+          export PANDAS_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep "pandas" | cut -d "=" -f3)
+          export NUMPY_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep "numpy" | cut -d "=" -f3)
+          echo "PANDAS_VER=$PANDAS_VER" >> $GITHUB_ENV
+          echo "NUMPY_VER=$NUMPY_VER" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -19,7 +21,7 @@ jobs:
         uses: docker/setup-buildx-action@v2.2.1
       - name: Build and load the image
         run: |
-          docker buildx build --load --tag wheels --build-arg version=${{ env.VERSION }} \
+          docker buildx build --load --tag wheels --build-arg PANDAS_VER=${{ env.PANDAS_VER }} --build-arg NUMPY-VER=${{ env.NUMPY_VER }} \
             --platform linux/arm/v5 --allow security.insecure --no-cache .
       - name: Copy wheels from the image
         run: |
