@@ -11,8 +11,8 @@ jobs:
         run: |
           export TAG=$(curl --silent https://api.github.com/repos/home-assistant/core/releases | jq -r 'map(select(.prerelease==false)) | first | .tag_name')
           export WHEELS_LIST=('PANDAS' 'NUMPY' 'PYNACL' 'CRYPTO' 'ORJSON' 'PILLOW')
-          for wheel in "${WHEELS_LIST[@]}"; do export {wheel}_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "{wheel}=" | cut -d "=" -f3); done
-          for wheel in "${WHEELS_LIST[@]}"; do echo "{wheel}_VER=${wheel}_VER" >> $GITHUB_ENV; done
+          for wheel in "${WHEELS_LIST[@]}"; do export ${wheel}_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "${wheel}=" | cut -d "=" -f3); done
+          for wheel in "${WHEELS_LIST[@]}"; do echo "${wheel}_VER=${wheel}_VER" >> $GITHUB_ENV; done
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -33,8 +33,8 @@ jobs:
           docker cp wheels:./root/.cache/pip/wheels wheels
           
           export WHEELS_LIST=('PANDAS' 'NUMPY' 'PYNACL' 'CRYPTO' 'ORJSON' 'PILLOW')
-          for wheel in "${WHEELS_LIST[@]}"; do export {wheel}=$(find wheels/ -type f -name "*.whl" | grep -i "{wheel}")
-          for wheel in "${WHEELS_LIST[@]}"; do echo "{wheel}=${wheel}" >> $GITHUB_ENV; done
+          for wheel in "${WHEELS_LIST[@]}"; do export ${wheel}=$(find wheels/ -type f -name "*.whl" | grep -i "${wheel}")
+          for wheel in "${WHEELS_LIST[@]}"; do echo "${wheel}=${wheel}" >> $GITHUB_ENV; done
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
