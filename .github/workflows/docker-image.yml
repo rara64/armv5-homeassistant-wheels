@@ -13,7 +13,7 @@ jobs:
         shell: bash
         run: |
           export TAG=$(curl --silent https://api.github.com/repos/home-assistant/core/releases | jq -r 'map(select(.prerelease==false)) | first | .tag_name')
-          export WHEELS_LIST=('PANDAS' 'NUMPY' 'PYNACL' 'CRYPTO' 'ORJSON' 'PILLOW')
+          export WHEELS_LIST=('PANDAS' 'NUMPY' 'PYNACL' 'CRYPTOGRAPHY' 'ORJSON' 'PILLOW')
           for wheel in "${WHEELS_LIST[@]}"; do export ${wheel}_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "${wheel}=" | cut -d "=" -f3); done
           for wheel in "${WHEELS_LIST[@]}"; do w=${wheel}_VER; echo "${wheel}_VER=${!w}" >> $GITHUB_ENV; done
       - name: Checkout code
@@ -35,7 +35,7 @@ jobs:
           mkdir wheels
           docker cp wheels:./root/.cache/pip/wheels wheels
           
-          export WHEELS_LIST=('PANDAS' 'NUMPY' 'PYNACL' 'CRYPTO' 'ORJSON' 'PILLOW')
+          export WHEELS_LIST=('PANDAS' 'NUMPY' 'PYNACL' 'CRYPTOGRAPHY' 'ORJSON' 'PILLOW')
           for wheel in "${WHEELS_LIST[@]}"; do export ${wheel}=$(find wheels/ -type f -name "*.whl" | grep -i "${wheel}")
           for wheel in "${WHEELS_LIST[@]}"; do echo "${wheel}=${wheel}" >> $GITHUB_ENV; done
       - name: Upload wheels
@@ -46,7 +46,7 @@ jobs:
             ${{ env.NUMPY }}
             ${{ env.PANDAS }}
             ${{ env.PYNACL }}
-            ${{ env.CRYPTO }}
+            ${{ env.CRYPTOGRAPHY }}
             ${{ env.ORJSON }}
             ${{ env.PILLOW }}
       - name: Dispatch kirkwood-homeassistant build
