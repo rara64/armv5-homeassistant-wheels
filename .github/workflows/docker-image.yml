@@ -25,7 +25,7 @@ jobs:
       - name: Build and load the image
         run: |
           docker buildx build --load --tag wheels --build-arg PANDAS_VER=${{ env.PANDAS_VER }} --build-arg NUMPY_VER=${{ env.NUMPY_VER }} \
-          --build-arg PYNACL_VER=${{ env.PYNACL_VER }} --build-arg CRYPTO_VER=${{ env.CRYPTO_VER }} --build-arg ORJSON_VER=${{ env.ORJSON_VER }} \
+          --build-arg PYNACL_VER=${{ env.PYNACL_VER }} --build-arg CRYPTO_VER=${{ env.CRYPTOGRAPHY_VER }} --build-arg ORJSON_VER=${{ env.ORJSON_VER }} \
           --build-arg PILLOW_VER=${{ env.PILLOW_VER }} \
           --platform linux/arm/v5 --allow security.insecure --no-cache .
       - name: Copy wheels from the image
