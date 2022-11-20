@@ -7,21 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get version for wheels
+        shell: bash
         run: |
           export TAG=$(curl --silent https://api.github.com/repos/home-assistant/core/releases | jq -r 'map(select(.prerelease==false)) | first | .tag_name')
-          export PANDAS_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "pandas=" | cut -d "=" -f3)
-          export NUMPY_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "numpy=" | cut -d "=" -f3)
-          export PYNACL_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "PyNaCl=" | cut -d "=" -f3)
-          export CRYPTO_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "cryptography=" | cut -d "=" -f3)
-          export ORJSON_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "orjson=" | cut -d "=" -f3)
-          export PILLOW_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "pillow=" | cut -d "=" -f3)
-          
-          echo "PANDAS_VER=$PANDAS_VER" >> $GITHUB_ENV
-          echo "NUMPY_VER=$NUMPY_VER" >> $GITHUB_ENV
-          echo "PYNACL_VER=$PYNACL_VER" >> $GITHUB_ENV
-          echo "CRYPTO_VER=$CRYPTO_VER" >> $GITHUB_ENV
-          echo "ORJSON_VER=$ORJSON_VER" >> $GITHUB_ENV
-          echo "PILLOW_VER=$PILLOW_VER" >> $GITHUB_ENV
+          export WHEELS_LIST=('PANDAS' 'NUMPY' 'PYNACL' 'CRYPTO' 'ORJSON' 'PILLOW')
+          for wheel in "${WHEELS_LIST[@]}"; do export {wheel}_VER=$(curl --silent https://raw.githubusercontent.com/home-assistant/core/$TAG/homeassistant/package_constraints.txt | grep -i "{wheel}=" | cut -d "=" -f3); done
+          for wheel in "${WHEELS_LIST[@]}"; do echo "{wheel}_VER=${wheel}_VER" >> $GITHUB_ENV; done
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -35,24 +26,15 @@ jobs:
           --build-arg PILLOW_VER=${{ env.PILLOW_VER } \
           --platform linux/arm/v5 --allow security.insecure --no-cache .
       - name: Copy wheels from the image
+        shell: bash
         run: |
           docker create --name wheels wheels
           mkdir wheels
           docker cp wheels:./root/.cache/pip/wheels wheels
           
-          export NUMPY=$(find wheels/ -type f -name "*.whl" | grep -i "numpy")
-          export PANDAS=$(find wheels/ -type f -name "*.whl" | grep -i "pandas")
-          export PYNACL=$(find wheels/ -type f -name "*.whl" | grep -i "pynacl")
-          export CRYPTO=$(find wheels/ -type f -name "*.whl" | grep -i "crypto")
-          export ORJSON=$(find wheels/ -type f -name "*.whl" | grep -i "orjson")
-          export PILLOW=$(find wheels/ -type f -name "*.whl" | grep -i "pillow")
-          
-          echo "NUMPY=$NUMPY" >> $GITHUB_ENV
-          echo "PANDAS=$PANDAS" >> $GITHUB_ENV
-          echo "PYNACL=$PYNACL" >> $GITHUB_ENV
-          echo "CRYPTO=$CRYPTO" >> $GITHUB_ENV
-          echo "ORJSON=$ORJSON" >> $GITHUB_ENV
-          echo "PILLOW=$PILLOW" >> $GITHUB_ENV
+          export WHEELS_LIST=('PANDAS' 'NUMPY' 'PYNACL' 'CRYPTO' 'ORJSON' 'PILLOW')
+          for wheel in "${WHEELS_LIST[@]}"; do export {wheel}=$(find wheels/ -type f -name "*.whl" | grep -i "{wheel}")
+          for wheel in "${WHEELS_LIST[@]}"; do echo "{wheel}=${wheel}" >> $GITHUB_ENV; done
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
