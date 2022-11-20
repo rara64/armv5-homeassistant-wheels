@@ -1,6 +1,9 @@
 name: Build wheels
 
-on: [workflow_dispatch]
+on:
+  repository_dispatch:
+    types: build
+  workflow_dispatch:
   
 jobs:
   build:
