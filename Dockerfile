@@ -41,9 +41,12 @@ RUN dpkg -i *.deb
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install numpy==$NUMPY_VER
+
+RUN --security=insecure mkdir -p /root/.cargo/registry && chmod 777 /root/.cargo/registry && mount -t tmpfs none /root/.cargo/registry && pip install \
+numpy==$NUMPY_VER \
+pynacl==$PYNACL_VER \
+cryptography==$CRYPTOGRAPHY_VER \
+orjson==$ORJSON_VER \
+pillow==$PILLOW_VER
+
 RUN pip install pandas==$PANDAS_VER
-RUN pip install pynacl==$PYNACL_VER
-RUN pip install cryptography==$CRYPTOGRAPHY_VER
-RUN pip install orjson==$ORJSON_VER
-RUN pip install pillow==$PILLOW_VER
