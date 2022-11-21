@@ -5,7 +5,6 @@ ARG PANDAS_VER
 ARG PYNACL_VER
 ARG CRYPTOGRAPHY_VER
 ARG ORJSON_VER
-ARG PILLOW_VER
 
 RUN echo "deb http://deb.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
 RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y jq curl rustc cargo build-essential cmake --no-install-recommends
