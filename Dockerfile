@@ -35,6 +35,7 @@ ARG CRYPTOGRAPHY_VER
 ARG ORJSON_VER
 ARG PILLOW_VER
 
+RUN echo "deb http://deb.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
 RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y rustc cargo build-essential cmake --no-install-recommends
 COPY --from=cargo-builder /cargo/target/armv5te-unknown-linux-gnueabi/debian/*.deb .
 RUN dpkg -i *.deb
