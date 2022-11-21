@@ -19,7 +19,6 @@ RUN --security=insecure mkdir -p /root/.cargo/registry && chmod 777 /root/.cargo
 numpy==$NUMPY_VER \
 pynacl==$PYNACL_VER \
 cryptography==$CRYPTOGRAPHY_VER \
-orjson==$ORJSON_VER \
-pillow==$PILLOW_VER
+orjson==$ORJSON_VER
 
 RUN pip install pandas==$PANDAS_VER
