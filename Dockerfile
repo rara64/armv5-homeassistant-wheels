@@ -44,6 +44,6 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install numpy==$NUMPY_VER
 RUN pip install pandas==$PANDAS_VER
 RUN pip install pynacl==$PYNACL_VER
-RUN pip install cryptography==$CRYPTO_VER
+RUN pip install cryptography==$CRYPTOGRAPHY_VER
 RUN pip install orjson==$ORJSON_VER
 RUN pip install pillow==$PILLOW_VER
