@@ -35,8 +35,8 @@ jobs:
           docker cp wheels:./root/.cache/pip/wheels wheels
           
           export WHEELS_LIST=('PANDAS' 'NUMPY' 'ORJSON')
-          for wheel in "${WHEELS_LIST[@]}"; do export ${wheel}=$(find wheels/ -type f -name "*.whl" | grep -i "${wheel}")
-          for wheel in "${WHEELS_LIST[@]}"; do echo "${wheel}=${wheel}" >> $GITHUB_ENV; done
+          for wheel in "${WHEELS_LIST[@]}"; do export ${wheel}=$(find wheels/ -type f -name "*.whl" | grep -i "${wheel}"); done
+          for wheel in "${WHEELS_LIST[@]}"; do w=${wheel}; echo "${wheel}=${!w}" >> $GITHUB_ENV; done
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
