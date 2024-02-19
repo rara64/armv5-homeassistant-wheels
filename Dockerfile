@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:experimental
-FROM --platform=linux/arm/v5 python:3.10-bullseye
+FROM --platform=linux/arm/v5 python:3.12-bullseye
 # ARG NUMPY_VER
 ARG PANDAS_VER
 ARG PYNACL_VER
