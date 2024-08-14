@@ -1,13 +1,12 @@
 # syntax = docker/dockerfile:experimental
-FROM --platform=linux/arm/v5 python:3.12.4-bookworm
+FROM --platform=linux/arm/v5 debian:sid
 # ARG NUMPY_VER
 ARG PANDAS_VER
 ARG PYNACL_VER
 # ARG CRYPTOGRAPHY_VER
 ARG ORJSON_VER
 
-RUN echo "deb http://deb.debian.org/debian sid main contrib non-free" >> /etc/apt/sources.list
-RUN apt update && DEBIAN_FRONTEND=noninteractive && apt upgrade -y && apt install -y jq build-essential cmake rustc --no-install-recommends
+RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y jq build-essential cmake rustc python-3.12 --no-install-recommends
 RUN wget $(curl --silent https://api.github.com/repos/rara64/armv5te-cargo/releases/latest | jq -r '.assets[0].browser_download_url')
 RUN dpkg -i *.deb
 
