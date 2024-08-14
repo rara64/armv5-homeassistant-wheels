@@ -6,9 +6,11 @@ ARG PYNACL_VER
 # ARG CRYPTOGRAPHY_VER
 ARG ORJSON_VER
 
-RUN echo "deb http://deb.debian.org/debian experimental main contrib non-free" > /etc/apt/sources.list
+RUN truncate -s 0 /etc/apt/sources.list
 RUN echo "deb http://deb.debian.org/debian trixie main contrib non-free" >> /etc/apt/sources.list
-RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y jq curl build-essential cmake --no-install-recommends
+RUN echo "deb http://deb.debian.org/debian experimental main contrib non-free" > /etc/apt/sources.list
+
+RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y jq curl build-essential cmake
 RUN apt install -y -t experimental rustc
 RUN wget $(curl --silent https://api.github.com/repos/rara64/armv5te-cargo/releases/latest | jq -r '.assets[0].browser_download_url')
 RUN dpkg -i *.deb
