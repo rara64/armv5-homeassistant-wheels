@@ -6,10 +6,9 @@ ARG PYNACL_VER
 # ARG CRYPTOGRAPHY_VER
 ARG ORJSON_VER
 
+RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y jq curl build-essential cmake --no-install-recommends
 RUN echo "deb http://deb.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
-
-RUN apt update && DEBIAN_FRONTEND=noninteractive && apt upgrade -y && apt install -y jq curl build-essential cmake --no-install-recommends
-RUN apt install -y -t testing rustc
+RUN apt update && apt install -y rustc
 RUN wget $(curl --silent https://api.github.com/repos/rara64/armv5te-cargo/releases/latest | jq -r '.assets[0].browser_download_url')
 RUN dpkg -i *.deb
 
