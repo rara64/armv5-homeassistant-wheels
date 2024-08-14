@@ -6,9 +6,9 @@ ARG PYNACL_VER
 # ARG CRYPTOGRAPHY_VER
 ARG ORJSON_VER
 
-RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y curl wget jq --no-install-recommends
-RUN export test=$(curl -v https://api.github.com/repos/rara64/armv5te-cargo/releases/latest) && echo $test &&  jq --raw-output '.assets[0].browser_download_url' $test
-RUN wget $(curl --silent https://api.github.com/repos/rara64/armv5te-cargo/releases/latest | jq --raw-output '.assets[0].browser_download_url')
+RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y curl wget jq
+RUN export test=$(curl -v http://api.github.com/repos/rara64/armv5te-cargo/releases/latest) && echo $test &&  jq --raw-output '.assets[0].browser_download_url' $test
+RUN wget $(curl --silent http://api.github.com/repos/rara64/armv5te-cargo/releases/latest | jq --raw-output '.assets[0].browser_download_url')
 RUN apt install -y build-essential cmake rustc python3.12 --no-install-recommends
 RUN dpkg -i *.deb
 
