@@ -6,8 +6,6 @@ ARG PYNACL_VER
 # ARG CRYPTOGRAPHY_VER
 ARG ORJSON_VER
 
-RUN truncate -s 0 /etc/apt/sources.list
-RUN echo "deb http://deb.debian.org/debian trixie main contrib non-free" >> /etc/apt/sources.list
 RUN echo "deb http://deb.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive && apt install -y jq curl build-essential cmake
