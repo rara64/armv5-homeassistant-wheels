@@ -11,7 +11,7 @@ RUN wget $(curl --silent https://api.github.com/repos/rara64/armv5te-cargo/relea
 RUN apt install -y build-essential cmake rustc python3.12
 RUN dpkg -i *.deb
 
-RUN echo "alias python='python3.12'" >> ~/.bashrc && . ~/.bashrc
+RUN alias python='python3.12'
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
